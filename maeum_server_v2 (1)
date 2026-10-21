@@ -1,0 +1,91 @@
+require("dotenv").config();
+
+const express = require("express");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const path = require("path");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
+app.use(express.json({ limit: "20kb" }));
+app.use(rateLimit({
+  windowMs: 60 * 1000,
+  limit: 20,
+  standardHeaders: "draft-7",
+  legacyHeaders: false
+}));
+app.use(express.static(path.join(__dirname, "public")));
+
+const crisisPattern = /(자살|죽고 싶|죽고싶|목숨을 끊|극단적 선택|자해|살기 싫|살기싫)/i;
+const crisisReply =
+  "지금 많이 힘든 상황일 수 있겠어요. 혼자 견디지 말고 지금 바로 믿을 만한 어른이나 가까운 사람에게 알려 주세요. 한국에서는 자살예방상담전화 109에 연락할 수 있고, 당장 위험하거나 다친 상황이라면 112 또는 119에 전화해 주세요. 이 사이트의 답변만으로 위기 상황을 해결하려 하지 말고 실제 사람의 도움을 받아 주세요.";
+
+app.post("/api/chat", async (req, res) => {
+  const concern = typeof req.body?.concern === "string" ? req.body.concern.trim() : "";
+  const mood = typeof req.body?.mood === "string" ? req.body.mood.trim() : "";
+
+  if (!concern) return res.status(400).json({ error: "고민을 입력해 주세요." });
+  if (concern.length > 5000) return res.status(400).json({ error: "고민은 5,000자 이내로 입력해 주세요." });
+
+  if (crisisPattern.test(concern)) {
+    return res.json({ reply: crisisReply });
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return res.json({
+      reply: "이야기해 줘서 고마워요. 그런 마음이 드는 데에는 분명 이유가 있을 거예요. 지금 느끼는 감정을 억지로 정리하지 않아도 괜찮아요. 가장 힘든 부분부터 천천히 이야기해 볼까요? (AI 답변을 사용하려면 서버에 OPENAI_API_KEY 설정이 필요해요.)"
+    });
+  }
+
+  try {
+    const apiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "너는 한국어로 대화하는 따뜻하고 신중한 마음돌봄 보조자다. 공감하고 판단하거나 진단하지 않으며, 짧고 실질적인 답변을 한다. 위험 신호가 있으면 혼자 있지 말고 믿을 만한 사람과 전문 상담에 즉시 연결되도록 권한다. 너는 전문가나 긴급 서비스가 아니며, 위기 키워드가 감지되면 별도의 안전 안내가 제공된다."
+          },
+          {
+            role: "user",
+            content: `현재 감정: ${mood || "미선택"}\n고민: ${concern}`
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 350
+      })
+    });
+
+    const data = await apiResponse.json();
+    if (!apiResponse.ok) {
+      console.error("AI API error:", data.error?.message || apiResponse.status);
+      return res.status(502).json({ error: "AI 답변 연결에 문제가 있어요. 잠시 후 다시 시도해 주세요." });
+    }
+
+    const reply = data.choices?.[0]?.message?.content?.trim();
+    return res.json({
+      reply: reply || "지금 이야기해 줘서 고마워요. 어떤 부분이 가장 마음에 걸리는지 조금 더 말해 줄래요?"
+    });
+  } catch (error) {
+    console.error("Chat request failed:", error);
+    return res.status(500).json({ error: "서버에서 답변을 만드는 중 문제가 생겼어요." });
+  }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.listen(PORT, () => {
+  console.log(`마음쉼표 서버 실행 중: http://localhost:${PORT}`);
+});

@@ -1,0 +1,15 @@
+{
+  "name": "maeum-sheumpyo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "마음쉼표 - 고민을 나누고 도움을 찾는 안전 중심 웹사이트",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "openai": "^4.77.0",
+    "helmet": "^8.0.0",
+    "express-rate-limit": "^7.5.0"
+  }
+}

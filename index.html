@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e9f0e7">
+  <meta name="description" content="마음쉼표 — 말하지 못했던 고민을 천천히 나눠 보세요.">
+  <title>마음쉼표 | 당신의 마음이 잠시 쉬어가는 곳</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="마음쉼표 홈"><span class="brand-mark">쉼</span><span>마음쉼표</span></a>
+    <a class="top-link" href="#help">도움이 필요할 때</a>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="dot"></span> 잠시 쉬어가도 괜찮아요</div>
+        <h1>마음이 복잡한 날,<br><span>여기서 잠깐 쉬어가요.</span></h1>
+        <p>괜찮은 척하지 않아도 돼요.<br>당신의 이야기를 천천히 들을게요.</p>
+        <a class="primary-link" href="#write">내 이야기 나누기 <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="sun"></div><div class="hill hill-back"></div><div class="hill hill-front"></div>
+        <div class="little-flower flower-one">✳</div><div class="little-flower flower-two">✳</div>
+        <div class="art-note">오늘도 여기까지 온<br>당신에게, 잘했어요.</div>
+      </div>
+    </section>
+
+    <section class="note-strip" aria-label="안내">
+      <span class="note-icon">♡</span>
+      <p>말을 잘 정리하지 않아도 괜찮아요. 지금 느끼는 그대로 적어도 돼요.</p>
+    </section>
+
+    <section class="composer panel" id="write">
+      <div class="section-kicker">YOUR SPACE</div>
+      <h2>지금 어떤 마음인가요?</h2>
+      <p class="muted">가장 가까운 감정을 골라도 좋고, 바로 이야기를 시작해도 좋아요.</p>
+      <div class="moods" role="group" aria-label="현재 감정 선택">
+        <button class="mood" data-mood="답답해요" type="button"><span>🌧️</span>답답해요</button>
+        <button class="mood" data-mood="불안해요" type="button"><span>🌫️</span>불안해요</button>
+        <button class="mood" data-mood="외로워요" type="button"><span>🌙</span>외로워요</button>
+        <button class="mood" data-mood="지쳤어요" type="button"><span>🍂</span>지쳤어요</button>
+        <button class="mood" data-mood="잘 모르겠어요" type="button"><span>☁️</span>잘 모르겠어요</button>
+      </div>
+      <form id="chat-form">
+        <label class="sr-only" for="message">나누고 싶은 고민</label>
+        <textarea id="message" maxlength="4000" placeholder="무슨 일이 있었는지, 어떤 기분인지 편하게 적어 주세요.&#10;예: 요즘 아무도 내 마음을 모르는 것 같아서 힘들어." required></textarea>
+        <div class="composer-foot"><span id="char-count">0 / 4000</span><button id="send" type="submit">마음 나누기 <span>↗</span></button></div>
+      </form>
+      <p class="privacy-note"><span>🔒</span> 이 페이지는 대화 내용을 데이터베이스에 저장하지 않도록 설계되어 있어요. 다만 서버·AI 제공자의 기술 로그 처리 방식은 별도로 확인해야 해요. 실명이나 연락처 등 개인정보는 적지 마세요.</p>
+    </section>
+
+    <section class="conversation panel hidden" id="conversation" aria-live="polite">
+      <div class="conversation-head"><span class="avatar">쉼</span><div><strong>마음쉼표</strong><span>당신의 이야기를 읽고 있어요</span></div><button id="clear" type="button" class="text-button">대화 지우기</button></div>
+      <div id="messages" class="messages"></div>
+    </section>
+
+    <section class="help-section" id="help">
+      <div class="section-kicker">YOU DON'T HAVE TO BE ALONE</div>
+      <h2>혼자 감당하기 버거운 순간에는</h2>
+      <p class="muted">이 사이트는 전문 상담이나 긴급 지원을 대신하지 않아요. 위험하다고 느껴지면 지금 바로 사람의 도움을 받아 주세요.</p>
+      <div class="help-grid">
+        <article class="help-card urgent"><span class="help-icon">☎</span><div><h3>자살예방 상담전화</h3><p class="help-number">109</p><p>24시간 상담</p><a href="tel:109">전화 연결하기 ↗</a></div></article>
+        <article class="help-card"><span class="help-icon">✚</span><div><h3>긴급한 위험</h3><p class="help-number">112 · 119</p><p>즉각적인 위험이나 응급 상황</p><a href="tel:112">112 전화 ↗</a> · <a href="tel:119">119 전화 ↗</a></div></article>
+        <article class="help-card"><span class="help-icon">♡</span><div><h3>믿을 수 있는 사람에게</h3><p>가족, 선생님, 친구 등 지금 곁에 있어 줄 수 있는 사람에게 “혼자 있기가 힘들어. 잠깐 같이 있어 줘”라고 말해 보세요.</p></div></article>
+      </div>
+      <div class="safety-banner"><strong>지금 당장 스스로를 다치게 할 것 같다면</strong><p>혼자 있지 말고, 위험한 물건이나 장소에서 떨어져 가까운 사람에게 바로 알리세요. 긴급하면 112 또는 119에 연락하세요.</p></div>
+    </section>
+
+    <section class="qr-section panel">
+      <div><div class="section-kicker">SHARE A LITTLE CARE</div><h2>마음쉼표 QR 코드</h2><p class="muted">사이트를 인터넷에 배포한 뒤, 이 주소로 QR 코드를 만들 수 있어요. QR 코드는 현재 열린 사이트 주소를 사용합니다.</p><label class="sr-only" for="site-url">사이트 주소</label><input id="site-url" type="url" placeholder="https://내-사이트-주소.example" autocomplete="url"><div class="qr-actions"><button id="make-qr" type="button" class="secondary-button">QR 코드 만들기</button><button id="download-qr" type="button" class="secondary-button" disabled>QR 이미지 저장</button></div><p class="tiny muted">실제 공개 주소로 접속한 뒤 생성하고, 다른 휴대폰으로 스캔 테스트를 해 주세요.</p></div>
+      <div class="qr-frame"><div id="qrcode" aria-label="생성된 QR 코드"><span class="qr-placeholder">주소를 입력하고<br>QR 코드를 만들어 주세요</span></div></div>
+    </section>
+  </main>
+  <footer><a class="brand" href="#"><span class="brand-mark">쉼</span><span>마음쉼표</span></a><p>당신의 이야기는 소중해요. 오늘 하루도 잘 버텨줘서 고마워요.</p><small>본 서비스는 정서적 지지를 위한 보조 도구이며 전문 상담·진단·응급 서비스를 대체하지 않습니다.</small></footer>
+</body>
+</html>
